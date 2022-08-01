@@ -1,2 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+
+
+using FogEnvironment.Service.BaseServices;
+
+var environment = new EnvironmentDecorator();
+
+var t = environment;
+
