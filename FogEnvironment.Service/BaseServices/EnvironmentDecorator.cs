@@ -13,7 +13,7 @@ namespace FogEnvironment.Service.BaseServices
             {
                 _clouds.Add(new Cloud
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Name = $"Cloud {i.ToString()}",
                     Latancy = 100,
                     StorageCapacity = 2000
@@ -24,7 +24,7 @@ namespace FogEnvironment.Service.BaseServices
             {
                 _edges.Add(new Edge
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Name = $"Edge {i.ToString()}",
                     Latancy = _picker.Next(50,100),
                     StorageCapacity = _picker.Next(100,500)
