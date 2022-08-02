@@ -7,6 +7,7 @@ namespace FogEnvironment.Domain.Model
         public Edge()
         {
             NodeType = NodeType.Edge;
+            Id = Guid.NewGuid();
         }
 
         public NodeType NodeType { get; set; }

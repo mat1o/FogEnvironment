@@ -4,12 +4,10 @@
 using FogEnvironment.Service.BaseServices;
 using FogEnvironment.Utilities;
 
-var environment = new EnvironmentDecorator();
-
 var startUp = new AppSettings();
+var environment = new EnvironmentDecorator(startUp.FogEnvironmentModel.Edges,startUp.FogEnvironmentModel.Clouds);
 
-Console.WriteLine($"{startUp.ApiSettings.BearerToken}");
 
 Console.ReadLine();
-//var t = environment;
+var t = environment;
 

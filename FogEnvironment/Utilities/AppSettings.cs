@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FogEnvironment.Utilities
 {
@@ -17,10 +12,10 @@ namespace FogEnvironment.Utilities
 
             IConfiguration config = builder.Build();
 
-            ApiSettings = config.GetSection("ApiSettings").Get<ApiSettings>();
+            FogEnvironmentModel = config.GetSection("FogEnvironment").Get<FogEnvironmentModel>();
 
         }
 
-        public ApiSettings ApiSettings { get; private set; }
+        public FogEnvironmentModel FogEnvironmentModel { get; private set; }
     }
 }

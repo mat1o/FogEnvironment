@@ -1,9 +1,4 @@
 ﻿using FogEnvironment.Domain.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FogEnvironment.Domain.Model
 {
@@ -12,6 +7,7 @@ namespace FogEnvironment.Domain.Model
         public Cloud()
         {
             NodeType = NodeType.Cloud;
+            Id = Guid.NewGuid();
         }
 
         public NodeType NodeType { get; set; }
