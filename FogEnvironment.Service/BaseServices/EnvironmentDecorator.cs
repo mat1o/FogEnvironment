@@ -1,4 +1,5 @@
 ﻿using FogEnvironment.Domain.Model;
+
 namespace FogEnvironment.Service.BaseServices
 {
     public class EnvironmentDecorator
