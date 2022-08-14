@@ -8,7 +8,17 @@ namespace FogEnvironment.NodeManager.Implementation
     {
         public void AssignTasksToNodes(List<BaseNode> baseNodes, UserTaskRequest userTaskRequest)
         {
-            
+            var nodesOrderByCapacity = baseNodes
+                .OrderBy(q => q.NodeType)
+                .ThenByDescending(q => q.NodeType);
+
         }
+
+        //public List<UserTask> FunctionsAssignedToNode(BaseNode node, UserTaskRequest userTaskRequest)
+        //{
+        //    var nodeAvailableCapacity = node.StorageCapacity - userTaskRequest.ImageSizeOnDisk;
+
+        //    var selectedTaskForThisNode = UtilitieFunctions.KnapSackResolver(nodeAvailableCapacity,)
+        //}
     }
 }
