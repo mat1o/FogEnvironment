@@ -1,13 +1,54 @@
 ﻿using FogEnvironment.Domain.Enum;
 using FogEnvironment.Domain.Model;
-using FogEnvironment.Domain.Model.TaskModels;
 using FogEnvironment.NodeManager.Abstraction;
-using NodeManager;
+using FogEnvironment.NodeManager.BaseServices;
 
 namespace FogEnvironment.NodeManager.Implementation
 {
     public class NodeDecorator : INodeDecorator
     {
+        private readonly AppSettings _appSettings;
+        private readonly IFitnessService _fitnessService;
+
+        public NodeDecorator(IFitnessService fitnessService)
+        {
+            _appSettings = new AppSettings();
+            _fitnessService = fitnessService;
+
+            CreateAndSeedNodes();
+        }
+
+        public void CreateAndSeedNodes()
+        {
+            var nodes = new List<BaseNode>();
+
+            nodes.AddRange(_appSettings.FogEnvironmentModel.Edges);
+            nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds);
+            nodes.AddRange(_appSettings.FogEnvironmentModel.Intermediaries);
+
+            foreach (var node in nodes)
+            {
+                node.TaskFailedEvent += Node_TaskFailedEvent;
+                node.NodeFailedEvent += Node_NodeFailedEvent;
+            }
+        }
+
+        private void Node_NodeFailedEvent(Guid obj, NodeType nodeType)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Task Node_TaskFailedEvent(Guid arg, NodeType nodeType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task ExecuteTasksAsync() 
+        {
+
+        }
+
+
         ////base node should contain a method to get a CustomUserTask
         //private readonly List<BaseNode> _nodes;
 
@@ -67,6 +108,5 @@ namespace FogEnvironment.NodeManager.Implementation
         //        //and if assigned to a node update its state as in progress, and so on...
         //    }
         //}
-
     }
 }

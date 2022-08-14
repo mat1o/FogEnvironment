@@ -9,6 +9,7 @@ namespace FogEnvironment.Domain.Model.AppSettingModels
     public class FogEnvironmentConfigurationModel
     {
         public List<Edge> Edges { get; set; }
+        public List<Intermediary> Intermediaries { get; set; }
         public List<Cloud> Clouds { get; set; }
     }
 }

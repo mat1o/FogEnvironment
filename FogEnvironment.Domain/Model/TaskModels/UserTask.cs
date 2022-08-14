@@ -10,7 +10,7 @@ namespace FogEnvironment.Domain.Model.TaskModels
         public int TaskVolume { get; set; }
         public int TaskCast { get; set; }
         public TaskType TaskType { get; set; }
-        public BaseNode AssignedNode { get; set; }
         public TaskState State { get; set; }
+        public BaseNode AssignedNode { get; set; }
     }
 }

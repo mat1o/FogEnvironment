@@ -8,5 +8,6 @@ namespace FogEnvironment.NodeManager.Abstraction
 {
     public interface INodeDecorator
     {
+        void CreateAndSeedNodes();
     }
 }

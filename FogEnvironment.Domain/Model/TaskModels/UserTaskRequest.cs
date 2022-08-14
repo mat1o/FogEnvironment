@@ -11,6 +11,6 @@ namespace FogEnvironment.Domain.Model.TaskModels
 
         public Guid Id { get; set; }
         public byte[] Image { get; set; }
-        public List<UserTask> UserTask { get; set; }
+        public List<TaskType> UserTask { get; set; }
     }
 }

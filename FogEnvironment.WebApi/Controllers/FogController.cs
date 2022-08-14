@@ -1,5 +1,6 @@
 ﻿using FogEnvironment.WebApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace FogEnvironment.WebApi.Controllers
 {
@@ -27,11 +28,9 @@ namespace FogEnvironment.WebApi.Controllers
         }
 
         [HttpPost]
-        public string UploadPhoto([FromForm] RequestViewModel file)
+        public string UploadPhoto([FromForm] RequestViewModel viewModel)
         {
-            //Console.WriteLine(file.Name);
-            return file.Name;
-
+            return "";
         }
     }
 }

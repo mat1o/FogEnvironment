@@ -10,6 +10,7 @@ namespace FogEnvironment.NodeManager
         {
             services.AddScoped<INodeDecorator, NodeDecorator>();
             services.AddScoped<ITaskManager, TaskManager>();
+            services.AddScoped<IFitnessService, FitnessService>();
 
             return services;    
         }

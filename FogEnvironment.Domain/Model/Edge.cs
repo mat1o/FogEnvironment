@@ -8,6 +8,7 @@ namespace FogEnvironment.Domain.Model
         {
             NodeType = NodeType.Edge;
             Id = Guid.NewGuid();
+            IsAvaliable = true;
         }
     }
 }

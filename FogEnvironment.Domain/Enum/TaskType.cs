@@ -2,11 +2,11 @@
 {
     public enum TaskType
     {
-        FaceDetection,
-        Resize,
-        Thumbnail,
-        ChangeExtention,
-        Upload,
+        FaceDetection = 0,
+        Resize = 1,
+        Thumbnail = 2,
+        ChangeExtention = 3,
+        Upload = 4,
     }
 
 }
