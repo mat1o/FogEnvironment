@@ -24,7 +24,6 @@ namespace FogEnvironment.NodeManager.Implementation
 
             nodes.AddRange(_appSettings.FogEnvironmentModel.Edges);
             nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds);
-            nodes.AddRange(_appSettings.FogEnvironmentModel.Intermediaries);
 
             foreach (var node in nodes)
             {

@@ -13,6 +13,7 @@ namespace FogEnvironment.Domain.Model
         public bool IsAvaliable { get; set; }
         public NodeType NodeType { get; set; } 
         public List<UserTask> AssignedTasks { get; set; }
+        public double CastOfExecution { get; set; }
 
 
         public event Func<Guid, NodeType, Task> TaskFailedEvent;

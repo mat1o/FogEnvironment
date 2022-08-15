@@ -4,10 +4,10 @@ namespace FogEnvironment.NodeManager
 {
     public class UtilitieFunctions
     {
-        public static KnapSackDTO KnapSackResolver(int W, int[] wt, int[] val, int n)
+        public static KnapSackDTO KnapSackResolver(int W, int[] wt, int[] val)
         {
             var knapSackDtio = new KnapSackDTO();
-
+            int n = val.Length;
             int i, w;
             int[,] K = new int[n + 1, W + 1];
 

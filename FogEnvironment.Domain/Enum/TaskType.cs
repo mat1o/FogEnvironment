@@ -2,11 +2,9 @@
 {
     public enum TaskType
     {
-        FaceDetection = 0,
-        Resize = 1,
-        Thumbnail = 2,
-        ChangeExtention = 3,
-        Upload = 4,
+        FaceDetection = 512,
+        Resize = 128,
+        Thumbnail = 256,
+        ChangeExtention = 128,
     }
-
 }
