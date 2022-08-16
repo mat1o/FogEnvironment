@@ -9,8 +9,9 @@ namespace FogEnvironment.Domain.Enum
     public enum TaskState
     {
         AwaitForFreeNode,
-        Done,
+        Assigned,
+        InProgress,
         Canceld,
-        InProgress
+        Done,
     }
 }

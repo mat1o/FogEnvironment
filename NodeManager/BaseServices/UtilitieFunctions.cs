@@ -34,7 +34,7 @@ namespace FogEnvironment.NodeManager
                     continue;
                 else
                 {
-                    knapSackDtio.NominatedRows.Add(wt[i - 1]);
+                    knapSackDtio.NominatedRows.Add(i - 1);
                     res = res - val[i - 1];
                     w = w - wt[i - 1];
                 }

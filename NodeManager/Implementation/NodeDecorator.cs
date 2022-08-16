@@ -32,7 +32,12 @@ namespace FogEnvironment.NodeManager.Implementation
             }
         }
 
-        private void Node_NodeFailedEvent(Guid obj, NodeType nodeType)
+        public async Task ManageAndExecuteTasksAsync(List<>) 
+        {
+
+        }
+
+        private Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)
         {
             throw new NotImplementedException();
         }
@@ -41,12 +46,6 @@ namespace FogEnvironment.NodeManager.Implementation
         {
             throw new NotImplementedException();
         }
-
-        public async Task ExecuteTasksAsync() 
-        {
-
-        }
-
 
         ////base node should contain a method to get a CustomUserTask
         //private readonly List<BaseNode> _nodes;

@@ -14,10 +14,10 @@ namespace FogEnvironment.Domain.Model
         public NodeType NodeType { get; set; } 
         public List<UserTask> AssignedTasks { get; set; }
         public double CastOfExecution { get; set; }
-
+        public double CastPerGb { get; set; }
 
         public event Func<Guid, NodeType, Task> TaskFailedEvent;
-        public event Action<Guid, NodeType> NodeFailedEvent;
+        public event Func<Guid, NodeType,Task> NodeFailedEvent;
 
 
         public void RaiseTaskFailureEvent()
