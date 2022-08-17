@@ -37,6 +37,8 @@ namespace FogEnvironment.NodeManager.Implementation
                 node.TaskFailedEvent += Node_TaskFailedEvent;
                 node.NodeFailedEvent += Node_NodeFailedEvent;
             }
+
+
         }
 
         public async Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)

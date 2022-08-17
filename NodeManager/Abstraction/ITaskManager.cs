@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FogEnvironment.Domain.Model;
 
 namespace FogEnvironment.NodeManager.Abstraction
 {
     public interface ITaskManager
     {
+        void OffloadFunctionsToNodes(List<BaseNode> baseNodes);
     }
 }

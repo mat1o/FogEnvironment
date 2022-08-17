@@ -5,6 +5,7 @@
         FaceDetection = 512,
         Resize = 128,
         Thumbnail = 256,
-        ChangeExtention = 128,
+        RotateVerticaly = 128,
+        RotateHorizontaly = 128,
     }
 }
