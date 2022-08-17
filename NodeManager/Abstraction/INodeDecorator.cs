@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FogEnvironment.Domain.Model.TaskModels;
 
 namespace FogEnvironment.NodeManager.Abstraction
 {
     public interface INodeDecorator
     {
         void CreateAndSeedNodes();
+        Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests);
     }
 }

@@ -2,38 +2,72 @@
 using FogEnvironment.Domain.Model;
 using FogEnvironment.Domain.Model.TaskModels;
 using FogEnvironment.NodeManager.Abstraction;
+using FogEnvironment.NodeManager.BaseServices;
 
 namespace FogEnvironment.NodeManager.Implementation
 {
     public class FitnessService : IFitnessService
     {
-        public void CreateUserTaskList(List<BaseNode> baseNodes, List<UserTaskRequest> userTaskRequest)
+        private List<UserTask> _userTasks;
+        private List<BaseNode> _baseNodes;
+
+        public FitnessService()
         {
-            var nodesOrderByCapacity = baseNodes
+            _userTasks = new List<UserTask>();
+            _baseNodes = new List<BaseNode>();
+        }
+
+        public (List<UserTask>, List<BaseNode>) CreateUserTaskList(List<BaseNode> baseNodes, List<UserTaskRequest> userTaskRequest)
+        {
+            _userTasks = GenerateUserTasks(userTaskRequest);
+            _baseNodes = baseNodes;
+
+            var nodesOrderByCapacity = _baseNodes
                 .OrderByDescending(q => q.StorageCapacity)
                 .ThenBy(q => q.NodeType);
 
-            List<UserTask> _userTasks = new List<UserTask>();
-
-            _userTasks = GenerateUserTasks(userTaskRequest);
-
             foreach (var node in nodesOrderByCapacity)
-                AssigneFunctionsToNode(node, _userTasks);
+                if (node.NodeType != NodeType.Cloud && node.IsAvaliable && node.AssignedTasks.IsAnyTaskAssigned())
+                    AssigneFunctionsToNodeByFitnessFunction(node, _userTasks);
+                else AssigneFunctionsToNodeDirectly(node, _userTasks);
+
+            return (_userTasks,_baseNodes);
         }
 
-        public List<UserTask> AssigneFunctionsToNode(BaseNode node, List<UserTask> userTaskRequest)
+        public List<UserTask> AssigneFunctionsToNodeByFitnessFunction(BaseNode node, List<UserTask> userTasks)
         {
-            var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTaskRequest, node);
-            var selectedTaskForThisNode = UtilitieFunctions.KnapSackResolver(node.StorageCapacity, userTaskRequest.Select(q => (int)q.TaskType).ToArray(), costOfRequestsByThisNode.Select(q => q.TaskCast).ToArray());
+            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
+
+            var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTasks, node);
+            var selectedTaskForThisNode = UtilitieFunctions.KnapSackResolver(node.StorageCapacity, userTasks.Select(q => (int)q.TaskType).ToArray(), costOfRequestsByThisNode.Select(q => q.TaskCast).ToArray());
+
 
             foreach (var selectedNodeIndex in selectedTaskForThisNode.NominatedRows)
             {
-                userTaskRequest.ElementAt(selectedNodeIndex).IsTaskAssignedToNode = true;
-                userTaskRequest.ElementAt(selectedNodeIndex).AssignedNode = node;
-                userTaskRequest.ElementAt(selectedNodeIndex).State = TaskState.Assigned;
+                userTasks.ElementAt(selectedNodeIndex).IsTaskAssignedToNode = true;
+                userTasks.ElementAt(selectedNodeIndex).AssignedNode = node;
+                userTasks.ElementAt(selectedNodeIndex).State = TaskState.Assigned;
+                node.AssignedTasks.Add(userTasks.ElementAt(selectedNodeIndex));
             }
 
-            return userTaskRequest;
+            node.IsAvaliable = false;
+            return userTasks;
+        }
+
+        public List<UserTask> AssigneFunctionsToNodeDirectly(BaseNode node, List<UserTask> userTasks)
+        {
+            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
+
+            foreach (var userTask in userTasks)
+            {
+                userTask.IsTaskAssignedToNode = true;
+                userTask.AssignedNode = node;
+                userTask.State = TaskState.Assigned;
+                node.AssignedTasks.Add(userTask);
+            }
+
+            node.IsAvaliable = false;
+            return userTasks;
         }
 
         public List<UserTask> GenerateUserTasks(List<UserTaskRequest> userTaskRequest)

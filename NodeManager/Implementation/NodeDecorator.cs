@@ -1,5 +1,6 @@
 ﻿using FogEnvironment.Domain.Enum;
 using FogEnvironment.Domain.Model;
+using FogEnvironment.Domain.Model.TaskModels;
 using FogEnvironment.NodeManager.Abstraction;
 using FogEnvironment.NodeManager.BaseServices;
 
@@ -9,32 +10,39 @@ namespace FogEnvironment.NodeManager.Implementation
     {
         private readonly AppSettings _appSettings;
         private readonly IFitnessService _fitnessService;
+        private readonly ITaskManager _taskManager;
+        private List<BaseNode> _nodes;
+        private List<UserTask> _userTasks;
+        private List<UserTaskRequest> _taskRequests;
 
-        public NodeDecorator(IFitnessService fitnessService)
+        public NodeDecorator(IFitnessService fitnessService, ITaskManager taskManager)
         {
-            _appSettings = new AppSettings();
             _fitnessService = fitnessService;
+            _taskManager = taskManager;
+            _appSettings = new AppSettings();
+            _nodes = new List<BaseNode>();
+            _userTasks = new List<UserTask>();
+            _taskRequests = new List<UserTaskRequest>();
 
             CreateAndSeedNodes();
         }
 
         public void CreateAndSeedNodes()
         {
-            var nodes = new List<BaseNode>();
+            _nodes.AddRange(_appSettings.FogEnvironmentModel.Edges);
+            _nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds);
 
-            nodes.AddRange(_appSettings.FogEnvironmentModel.Edges);
-            nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds);
-
-            foreach (var node in nodes)
+            foreach (var node in _nodes)
             {
                 node.TaskFailedEvent += Node_TaskFailedEvent;
                 node.NodeFailedEvent += Node_NodeFailedEvent;
             }
         }
 
-        public async Task ManageAndExecuteTasksAsync(List<>) 
+        public async Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)
         {
-
+            _taskRequests = userTaskRequests;
+            (_userTasks, _nodes) = _fitnessService.CreateUserTaskList(_nodes, userTaskRequests);
         }
 
         private Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)

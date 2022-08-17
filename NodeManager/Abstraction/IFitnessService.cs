@@ -6,7 +6,7 @@ namespace FogEnvironment.NodeManager.Abstraction
 {
     public interface IFitnessService
     {
-        void CreateUserTaskList(List<BaseNode> baseNodes,List<UserTaskRequest> userTaskRequest);
-        List<UserTask> AssigneFunctionsToNode(BaseNode node, List<UserTask> userTaskRequest);
+        (List<UserTask>, List<BaseNode>) CreateUserTaskList(List<BaseNode> baseNodes,List<UserTaskRequest> userTaskRequest);
+        List<UserTask> AssigneFunctionsToNodeByFitnessFunction(BaseNode node, List<UserTask> userTaskRequest);
     }
 }
