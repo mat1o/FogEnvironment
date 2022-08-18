@@ -3,9 +3,8 @@
     public enum TaskType
     {
         FaceDetection = 512,
-        Resize = 128,
         Thumbnail = 256,
-        RotateVerticaly = 128,
         RotateHorizontaly = 128,
+        ConvertToBlackandWhite = 128,
     }
 }

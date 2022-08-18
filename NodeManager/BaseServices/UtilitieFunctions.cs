@@ -1,4 +1,5 @@
 ﻿using FogEnvironment.Domain.DTO;
+using System.Drawing;
 
 namespace FogEnvironment.NodeManager
 {
@@ -41,6 +42,17 @@ namespace FogEnvironment.NodeManager
             }
 
             return knapSackDtio;
+        }
+
+        public static Bitmap ConvertByteArrayToBitmap(this byte[] image) 
+        {
+            Bitmap bmp;
+            using (var ms = new MemoryStream(image))
+            {
+                bmp = new Bitmap(ms);
+            }
+
+            return bmp;
         }
     }
 }

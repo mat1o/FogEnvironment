@@ -18,7 +18,7 @@ namespace FogEnvironment.ImageProcessService.BLL
                 .EqualizeHistogram()
                 .Result);
 
-        public static Bitmap HorizontalFlip(Bitmap image)
+        public Bitmap HorizontalFlip(Bitmap image)
         {
             int w = image.Width;
             int h = image.Height;
@@ -52,7 +52,7 @@ namespace FogEnvironment.ImageProcessService.BLL
             return resimg;
         }
 
-        public static Bitmap ConvertToBlackandWhite(Bitmap image)
+        public Bitmap ConvertToBlackandWhite(Bitmap image)
         {
             Bitmap bitmap = new Bitmap(image);
             for (int i = 0; i < bitmap.Width; i++)
@@ -66,7 +66,7 @@ namespace FogEnvironment.ImageProcessService.BLL
             return bitmap;
         }
 
-        public static Bitmap CreateThumbnail(Bitmap image, int ThumbnailMax, string OriginalImagePath)
+        public Bitmap CreateThumbnail(Bitmap image, int ThumbnailMax = 200)
         {
             Bitmap imgOriginal = image;
             float OriginalHeight = imgOriginal.Height;
@@ -91,34 +91,6 @@ namespace FogEnvironment.ImageProcessService.BLL
             ResizedImage.DrawImage(imgOriginal, 0, 0, ThumbnailWidth, ThumbnailHeight);
 
             return ThumbnailBitmap;
-        }
-
-        public static Bitmap Diff(Bitmap src1, Bitmap src2, int x1, int y1, int x2, int y2, int width, int height)
-        {
-            Bitmap diffBM = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    Color col1 = src1.GetPixel(x1 + x, y1 + y);
-                    Color col2 = src2.GetPixel(x2 + x, y2 + y);
-
-                    int r = 0, g = 0, b = 0;
-                    r = Math.Abs(col1.R - col2.R);
-                    g = Math.Abs(col1.G - col2.G);
-                    b = Math.Abs(col1.B - col2.B);
-
-                    int dif = 255 - ((r + g + b) / 3);
-
-                    Color newcol = Color.FromArgb(dif, dif, dif);
-
-                    diffBM.SetPixel(x, y, newcol);
-
-                }
-            }
-
-            return diffBM;
         }
     }
 }

@@ -36,20 +36,22 @@ namespace FogEnvironment.NodeManager.Implementation
             {
                 node.TaskFailedEvent += Node_TaskFailedEvent;
                 node.NodeFailedEvent += Node_NodeFailedEvent;
-                node.FailedOfloadedTasks.CollectionChanged += FailedOfloadedTasks_CollectionChanged;
+                node.FaildTaskAssignment += Node_FaildTaskAssignment;
             }
+
+           _nodes = _taskManager.OffloadFunctionsToNodes(_nodes);
         }
 
-        private void FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private Task Node_FaildTaskAssignment(Guid arg1, NodeType arg2, UserTask arg3)
         {
-            if (e.Action is System.Collections.Specialized.NotifyCollectionChangedAction.Add) { }
-                //FaildTaskAssignment(Id, NodeType, e.NewItems[0] as UserTask);
+            
         }
 
         public async Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)
         {
             _taskRequests = userTaskRequests;
             (_userTasks, _nodes) = _fitnessService.CreateUserTaskList(_nodes, userTaskRequests);
+
         }
 
         private Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)
