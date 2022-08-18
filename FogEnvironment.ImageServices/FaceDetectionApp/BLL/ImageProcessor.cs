@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace FaceDetectionApp
 {
-    internal class ImageProcessor
+    public class ImageProcessor
     {
         private Bitmap _bitmap;
         public Bitmap Result { get => _bitmap; }
@@ -11,21 +11,21 @@ namespace FaceDetectionApp
         {
             _bitmap = bitmap;
         }
-        internal ImageProcessor Grayscale()
+        public ImageProcessor Grayscale()
         {
             var grayscale = new Grayscale(0.2125, 0.7154, 0.0721);
             _bitmap = grayscale.Apply(_bitmap);
             return this;
         }
 
-        internal ImageProcessor EqualizeHistogram()
+        public ImageProcessor EqualizeHistogram()
         {
             HistogramEqualization filter = new HistogramEqualization();
             filter.ApplyInPlace(_bitmap);
             return this;
         }
 
-        internal ImageProcessor Resize(Size size)
+        public ImageProcessor Resize(Size size)
         {
             _bitmap = new Bitmap(_bitmap, size);
             return this;

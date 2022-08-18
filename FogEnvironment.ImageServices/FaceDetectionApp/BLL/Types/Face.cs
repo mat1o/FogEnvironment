@@ -2,7 +2,7 @@
 
 namespace FaceDetectionApp
 {
-    internal class Face
+    public class Face
     {
         private Rectangle _selectionRectangle;
 

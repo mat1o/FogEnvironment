@@ -3,26 +3,27 @@ using Accord.Vision.Detection.Cascades;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FaceDetectionApp
 {
-    internal class FaceDetector
+    public class FaceDetector
     {
-        private HaarObjectDetector _detector;
+        public HaarObjectDetector _detector;
 
         public FaceDetector()
         {
             _detector = new HaarObjectDetector(new FaceHaarCascade());
         }
 
-        internal IEnumerable<Face> ExtractFaces(Bitmap picture, FaceDetectorParameters faceDetectorParameters) =>
+        public IEnumerable<Face> ExtractFaces(Bitmap picture) =>
             picture == null ?
             Enumerable.Empty<Face>() :
-            ProcessFrame(picture, faceDetectorParameters).Select(rec => new Face(rec));
+            ProcessFrame(picture).Select(rec => new Face(rec));
 
-        private IEnumerable<Rectangle> ProcessFrame(Bitmap picture, FaceDetectorParameters faceDetectorParameters)
+        public IEnumerable<Rectangle> ProcessFrame(Bitmap picture)
         {
-            _detector.MinSize = new Size(faceDetectorParameters.MinimumSize, faceDetectorParameters.MinimumSize);
+            _detector.MinSize = new Size(5, 5);
             _detector.ScalingFactor = 1.1f;
             _detector.ScalingMode = ObjectDetectorScalingMode.GreaterToSmaller;
             _detector.SearchMode = ObjectDetectorSearchMode.Single;

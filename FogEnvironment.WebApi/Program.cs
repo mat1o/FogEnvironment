@@ -1,3 +1,4 @@
+
 using FogEnvironment.NodeManager;
 
 var builder = WebApplication.CreateBuilder(args);

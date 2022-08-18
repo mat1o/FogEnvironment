@@ -36,9 +36,14 @@ namespace FogEnvironment.NodeManager.Implementation
             {
                 node.TaskFailedEvent += Node_TaskFailedEvent;
                 node.NodeFailedEvent += Node_NodeFailedEvent;
+                node.FailedOfloadedTasks.CollectionChanged += FailedOfloadedTasks_CollectionChanged;
             }
+        }
 
-
+        private void FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action is System.Collections.Specialized.NotifyCollectionChangedAction.Add) { }
+                //FaildTaskAssignment(Id, NodeType, e.NewItems[0] as UserTask);
         }
 
         public async Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)

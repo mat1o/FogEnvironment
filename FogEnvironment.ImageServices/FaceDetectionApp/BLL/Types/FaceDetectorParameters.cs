@@ -2,7 +2,7 @@
 
 namespace FaceDetectionApp
 {
-    internal class FaceDetectorParameters
+    public class FaceDetectorParameters
     {
         public float ScalingFactor { get; private set; }
         public ObjectDetectorScalingMode ScalingMode { get; private set; }
@@ -12,7 +12,7 @@ namespace FaceDetectionApp
 
         public bool IsValid { get; private set; }
 
-        private FaceDetectorParameters(float scalingFactor, int minimumSize, ObjectDetectorScalingMode objectDetectorScalingMode,
+        public FaceDetectorParameters(float scalingFactor, int minimumSize, ObjectDetectorScalingMode objectDetectorScalingMode,
             ObjectDetectorSearchMode objectDetectorSearchMode, bool useParallelProcessing, bool isValid)
         {
             ScalingFactor = scalingFactor;
