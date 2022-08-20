@@ -4,7 +4,7 @@ namespace FogEnvironment.Domain.Model
 {
     public class ActionModel
     {
-        public Action<object> ExecutableFunction { get; set; }
+        public Func<object,object> ExecutableFunction { get; set; }
         public TaskType TaskType { get; set; }
     }
 }

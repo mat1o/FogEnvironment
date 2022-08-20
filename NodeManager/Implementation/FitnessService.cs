@@ -24,11 +24,11 @@ namespace FogEnvironment.NodeManager.Implementation
             _baseNodes = baseNodes;
 
             var nodesOrderByCapacity = _baseNodes
-                .OrderByDescending(q => q.StorageCapacity)
+                .OrderBy(q => q.StorageCapacity)
                 .ThenBy(q => q.NodeType);
 
             foreach (var node in nodesOrderByCapacity)
-                if (node.NodeType != NodeType.Cloud && node.IsAvaliable && node.AssignedTasks.IsAnyTaskAssigned())
+                if (node.NodeType != NodeType.Cloud && node.IsAvaliable && !node.AssignedTasks.IsAnyTaskAssigned())
                     AssigneTasksToNodeByFitnessFunction(node, _userTasks);
                 else AssigneTasksToNodeDirectly(node, _userTasks);
 
@@ -38,13 +38,13 @@ namespace FogEnvironment.NodeManager.Implementation
         public List<UserTask> AssigneTasksToNodeByFitnessFunction(BaseNode node, List<UserTask> userTasks)
         {
             Thread.Sleep(node.LatancyToUser);
-            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
+            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
 
             var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTasks, node);
             var selectedTaskForThisNode = UtilitieFunctions.KnapSackResolver(node.StorageCapacity, userTasks.Select(q => (int)q.TaskType).ToArray(), costOfRequestsByThisNode.Select(q => q.TaskCast).ToArray());
 
 
-            foreach (var selectedNodeIndex in selectedTaskForThisNode.NominatedRows)
+            foreach (var selectedNodeIndex in selectedTaskForThisNode?.NominatedRows)
             {
                 userTasks.ElementAt(selectedNodeIndex).IsTaskAssignedToNode = true;
                 userTasks.ElementAt(selectedNodeIndex).AssignedNode = node;
@@ -100,7 +100,7 @@ namespace FogEnvironment.NodeManager.Implementation
         public List<UserTask> CalculateCostOfTasksByNode(List<UserTask> userTasks, BaseNode node)
         {
             foreach (var userTask in userTasks)
-                userTask.TaskCast = ((int)userTask.TaskType / 1024 * (int)(node.CastPerGb * Math.Pow(10, 5))) + (int)(node.CastOfExecution * Math.Pow(10, 5));
+                userTask.TaskCast = (int)((((double)(int)userTask.TaskType) / (double)1024) * (int)(node.CastPerGb * Math.Pow(10, 5))) + (int)(node.CastOfExecution * Math.Pow(10, 7));
 
             return userTasks;
         }

@@ -14,14 +14,22 @@ namespace FogEnvironment.WebApi.ViewModels
 
         public List<TaskType> TaskTypes
         {
-            get { return Name.Split(",").Cast<TaskType>().ToList(); }
-            set { }
+            get
+            {
+                if (!string.IsNullOrEmpty(Name))
+                return Name.Split(",").Select(x => Enum.Parse(typeof(TaskType), x))
+                           .Cast<TaskType>()
+                           .ToList();
+
+                return null;
+            }
         }
 
         public byte[] ByteArrayFormImage
         {
             get
             {
+                if(Image is not null)
                 if (Image.Length > 0)
                 {
                     using var fileStream = Image.OpenReadStream();
@@ -32,13 +40,11 @@ namespace FogEnvironment.WebApi.ViewModels
                 }
                 return null;
             }
-            set { }
         }
 
         public long FileSize
         {
-            get { return Image.Length; }
-            set { }
+            get { if (Image is not null) return Image.Length; else return 0; }
         }
     }
 }

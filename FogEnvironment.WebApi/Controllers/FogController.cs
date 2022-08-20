@@ -17,11 +17,11 @@ namespace FogEnvironment.WebApi.Controllers
         [HttpPost]
         public string UploadPhoto([FromForm] RequestViewModel viewModel)
         {
-            var test = _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q=> new UserTaskRequest 
+            var test = _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q => new UserTaskRequest
             {
                 Image = q.ByteArrayFormImage,
-                 UserTask = q.TaskTypes,
-                  ImageSizeOnDisk = q.FileSize
+                UserTask = q.TaskTypes,
+                ImageSizeOnDisk = q.FileSize
             }).ToList()
             );
 

@@ -4,7 +4,11 @@ namespace FogEnvironment.Domain.Model.TaskModels
 {
     public class UserTask
     {
-        public UserTask() => ID = Guid.NewGuid();
+        public UserTask()
+        { 
+            ID = Guid.NewGuid();
+            TaskStates = new List<TaskState>();
+        }
         
 
         public Guid ID { get; set; }

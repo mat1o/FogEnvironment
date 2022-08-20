@@ -8,9 +8,9 @@ namespace FogEnvironment.NodeManager.BaseServices
 {
     public class AppSettings : IAppSettings
     {
-        public FogEnvironmentConfigurationModel FogEnvironmentModel { get; private set; }
+        public FogEnvironmentConfigurationModel FogEnvironmentModel { get; private set; } = new FogEnvironmentConfigurationModel();
 
-        public TasksVolume TasksVolume { get; private set; }
+        public TasksVolume TasksVolume { get; private set; } = new TasksVolume();
 
         public AppSettings()
         {

@@ -43,12 +43,10 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<(List<BaseNode>, List<UserTask>)> ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks)
         {
-            await Task.Run(async () => 
-            {
+           
                 foreach (var node in baseNodes)
-                    if (node.IsAvaliable)
+                    if (1==1)
                     {
-                        node.IsAvaliable = false;
                         foreach (var task in node.AssignedTasks)
                         {
                             var taskFromUserTasks = userTasks.FirstOrDefault(q => q.ID == task.ID);
@@ -63,7 +61,7 @@ namespace FogEnvironment.NodeManager.Implementation
                                 try
                                 {
                                     Thread.Sleep(task.AssignedNode.ExectionLatancy);
-                                    actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
+                                    var t = actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
                                     task.State = TaskState.Done;
                                     task.TaskStates.Add(TaskState.Done);
                                     task.IsTaskDone = true;
@@ -82,7 +80,7 @@ namespace FogEnvironment.NodeManager.Implementation
                         node.IsAvaliable = true;
                     }
                     else node.RasieNodeFailureEvent(node.Id, node.NodeType);
-            });
+          
             
             return (baseNodes, userTasks);
         }
