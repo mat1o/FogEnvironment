@@ -31,15 +31,15 @@ namespace FogEnvironment.Domain.Model
         public event Func<Guid, NodeType, UserTask, Task> AssignTheFaildTask;
 
 
-        public async Task RaiseTaskFailureEvent(Guid id ,Guid taskId, NodeType nodeType, TaskType taskType,Exception exception) =>
-            await TaskFailedEvent(id, taskId, nodeType, taskType, exception);
+        public void RaiseTaskFailureEvent(Guid id ,Guid taskId, NodeType nodeType, TaskType taskType,Exception exception) =>
+             TaskFailedEvent(id, taskId, nodeType, taskType, exception);
 
-        public async Task FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public void FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action is System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                await AssignTheFaildTask(Id, NodeType, e.NewItems[0] as UserTask);
+                AssignTheFaildTask(Id, NodeType, e.NewItems[0] as UserTask);
         }
 
-        public async Task RasieNodeFailureEvent(Guid nodeId, NodeType nodeType) => await NodeFailedEvent(nodeId, nodeType);
+        public void RasieNodeFailureEvent(Guid nodeId, NodeType nodeType) => NodeFailedEvent(nodeId, nodeType);
     }
 }

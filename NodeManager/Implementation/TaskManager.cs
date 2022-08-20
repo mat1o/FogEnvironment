@@ -34,7 +34,7 @@ namespace FogEnvironment.NodeManager.Implementation
                 {
                     task.State = TaskState.Canceld;
                     task.TaskStates.Add(TaskState.Canceld);
-                    await task.AssignedNode.RaiseTaskFailureEvent(task.AssignedNode.Id, task.ID, task.AssignedNode.NodeType, task.TaskType, e);
+                    task.AssignedNode.RaiseTaskFailureEvent(task.AssignedNode.Id, task.ID, task.AssignedNode.NodeType, task.TaskType, e);
                 }
             });
 
@@ -74,14 +74,14 @@ namespace FogEnvironment.NodeManager.Implementation
                                 {
                                     taskFromUserTasks.State = TaskState.Canceld;
                                     task.TaskStates.Add(TaskState.Canceld);
-                                    await node.RaiseTaskFailureEvent(node.Id, task.ID, node.NodeType, task.TaskType, e);
+                                    node.RaiseTaskFailureEvent(node.Id, task.ID, node.NodeType, task.TaskType, e);
                                     task.TaskStates.Add(TaskState.AwaitForFreeNode);
                                 }
                             }
                         }
                         node.IsAvaliable = true;
                     }
-                    else await node.RasieNodeFailureEvent(node.Id, node.NodeType);
+                    else node.RasieNodeFailureEvent(node.Id, node.NodeType);
             });
             
             return (baseNodes, userTasks);
