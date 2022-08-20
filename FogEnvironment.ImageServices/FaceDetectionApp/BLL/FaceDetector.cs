@@ -1,10 +1,8 @@
 ﻿using Accord.Vision.Detection;
 using Accord.Vision.Detection.Cascades;
-using FaceDetectionApp;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FogEnvironment.ImageProcessService
 {

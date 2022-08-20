@@ -1,5 +1,4 @@
 ﻿using FogEnvironment.Domain.Model;
-using FogEnvironment.Domain.Model.AppSettingModels;
 using FogEnvironment.Domain.Model.TaskModels;
 
 namespace FogEnvironment.NodeManager.Abstraction
