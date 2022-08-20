@@ -24,31 +24,5 @@ namespace FogEnvironment.NodeManager.BaseServices
             TasksVolume = config.GetSection("TasksVolume").Get<TasksVolume>();
             IAppSettings.SientificNotationPower = config.GetSection("SientificNotationPower").Get<double>();
         }
-
-        public List<BaseNode> CreateAndSeedNodes()
-        {
-            var nodes = new List<BaseNode>();
-
-            nodes.AddRange(FogEnvironmentModel.Edges);
-            nodes.AddRange(FogEnvironmentModel.Clouds);
-
-            foreach (var node in nodes)
-            {
-                node.TaskFailedEvent += Node_TaskFailedEvent;
-                node.NodeFailedEvent += Node_NodeFailedEvent;
-            }
-
-            return nodes;
-        }
-
-        public Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Node_TaskFailedEvent(Guid arg, NodeType nodeType)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

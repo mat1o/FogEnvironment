@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Accord.Vision.Detection;
+using FogEnvironment.ImageProcessService;
 
 namespace FaceDetectionApp
 {
@@ -35,8 +36,7 @@ namespace FaceDetectionApp
         private void btnDetect_Click(object sender, EventArgs e)=>
             new ImageSelector(_selectedPicture).IsValidImage((pic) =>
                 _faceDetector.ExtractFaces(
-                    new ImageProcessor(pic).Grayscale().EqualizeHistogram().Result,
-                    FaceDetectorParameters.Create(ScaleFactor, MinSize, ScaleMode, SearchMode, Parallel))
+                    new ImageProcessor(pic).Grayscale().EqualizeHistogram().Result)
                 .HasElements(pictureBox1.Refresh)
                 .ForEach((face) => pictureBox1.DrawRectangle(
                         face.FaceRectangle,

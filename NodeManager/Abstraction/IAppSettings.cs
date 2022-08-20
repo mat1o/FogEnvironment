@@ -9,10 +9,5 @@ namespace FogEnvironment.NodeManager.Abstraction
         FogEnvironmentConfigurationModel FogEnvironmentModel { get; }
         TasksVolume TasksVolume { get; }
         static double SientificNotationPower { get; set; }
-
-        List<BaseNode> CreateAndSeedNodes();
-
-        Task Node_NodeFailedEvent(Guid obj, NodeType nodeType);
-        Task Node_TaskFailedEvent(Guid arg, NodeType nodeType);
     }
 }

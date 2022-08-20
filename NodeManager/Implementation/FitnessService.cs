@@ -29,14 +29,15 @@ namespace FogEnvironment.NodeManager.Implementation
 
             foreach (var node in nodesOrderByCapacity)
                 if (node.NodeType != NodeType.Cloud && node.IsAvaliable && node.AssignedTasks.IsAnyTaskAssigned())
-                    AssigneFunctionsToNodeByFitnessFunction(node, _userTasks);
-                else AssigneFunctionsToNodeDirectly(node, _userTasks);
+                    AssigneTasksToNodeByFitnessFunction(node, _userTasks);
+                else AssigneTasksToNodeDirectly(node, _userTasks);
 
-            return (_userTasks,_baseNodes);
+            return (_userTasks, _baseNodes);
         }
 
-        public List<UserTask> AssigneFunctionsToNodeByFitnessFunction(BaseNode node, List<UserTask> userTasks)
+        public List<UserTask> AssigneTasksToNodeByFitnessFunction(BaseNode node, List<UserTask> userTasks)
         {
+            Thread.Sleep(node.LatancyToUser);
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
 
             var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTasks, node);
@@ -51,13 +52,17 @@ namespace FogEnvironment.NodeManager.Implementation
                 node.AssignedTasks.Add(userTasks.ElementAt(selectedNodeIndex));
             }
 
+            node.StorageCapacity = node.StorageCapacity - selectedTaskForThisNode.MaxValue;
             node.IsAvaliable = false;
+
             return userTasks;
         }
 
-        public List<UserTask> AssigneFunctionsToNodeDirectly(BaseNode node, List<UserTask> userTasks)
+        public List<UserTask> AssigneTasksToNodeDirectly(BaseNode node, List<UserTask> userTasks)
         {
+            Thread.Sleep(node.LatancyToUser);
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
+            var taskCasts = 0;
 
             foreach (var userTask in userTasks)
             {
@@ -65,9 +70,12 @@ namespace FogEnvironment.NodeManager.Implementation
                 userTask.AssignedNode = node;
                 userTask.State = TaskState.Assigned;
                 node.AssignedTasks.Add(userTask);
+                taskCasts += userTask.TaskCast;
             }
 
+            node.StorageCapacity = node.StorageCapacity - taskCasts;
             node.IsAvaliable = false;
+
             return userTasks;
         }
 
@@ -95,6 +103,52 @@ namespace FogEnvironment.NodeManager.Implementation
                 userTask.TaskCast = ((int)userTask.TaskType / 1024 * (int)(node.CastPerGb * Math.Pow(10, 5))) + (int)(node.CastOfExecution * Math.Pow(10, 5));
 
             return userTasks;
+        }
+
+        public (List<BaseNode>, UserTask) ReassignsFailedUserTaskToAvailableNode(List<BaseNode> baseNodes, UserTask userTask)
+        {
+            foreach (var node in baseNodes)
+            {
+                if (node.ExecutableFunctions.Select(q => q.TaskType).Contains(userTask.TaskType)
+                    && node.IsAvaliable
+                    && node.StorageCapacity > (int)userTask.TaskType
+                    && node.Id != userTask.AssignedNode.Id)
+                {
+                    userTask.AssignedNode = node;
+                    userTask.State = TaskState.AwaitForFreeNode;
+                    userTask.TaskStates.Add(TaskState.AwaitForFreeNode);
+                    Thread.Sleep(node.LatancyToOther);
+
+                    break;
+                }
+            }
+
+            return (baseNodes, userTask);
+        }
+
+        public (List<UserTask>, BaseNode) FailedNodeRemainedTasksReassign(List<BaseNode> baseNodes, BaseNode failedNode)
+        {
+            var remainedTasks = failedNode.AssignedTasks.Where(q => q.State == TaskState.Canceld).ToList();
+
+            foreach (var remainedTask in remainedTasks)
+            {
+                foreach (var node in baseNodes)
+                {
+                    if (node.ExecutableFunctions.Select(q => q.TaskType).Contains(remainedTask.TaskType)
+                        && node.IsAvaliable
+                        && node.StorageCapacity > (int)remainedTask.TaskType
+                        && node.Id != remainedTask.AssignedNode.Id)
+                    {
+                        remainedTask.AssignedNode = node;
+                        remainedTask.State = TaskState.AwaitForFreeNode;
+                        remainedTask.TaskStates.Add(TaskState.AwaitForFreeNode);
+                        Thread.Sleep(node.LatancyToOther);
+
+                        break;
+                    }
+                }
+            }
+            return (remainedTasks, failedNode);
         }
     }
 }

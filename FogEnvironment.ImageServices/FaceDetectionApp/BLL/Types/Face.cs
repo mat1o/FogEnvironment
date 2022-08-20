@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace FaceDetectionApp
+namespace FogEnvironment.ImageProcessService
 {
     public class Face
     {

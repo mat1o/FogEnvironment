@@ -44,7 +44,7 @@ namespace FogEnvironment.NodeManager
             return knapSackDtio;
         }
 
-        public static Bitmap ConvertByteArrayToBitmap(this byte[] image) 
+        public static Bitmap ConvertByteArrayToBitmap(byte[] image) 
         {
             Bitmap bmp;
             using (var ms = new MemoryStream(image))

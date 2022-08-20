@@ -14,7 +14,9 @@ namespace FogEnvironment.Domain.Model
         public Guid Id { get; set; }
         public int StorageCapacity { get; set; }
         public int ParallelRequestCapacity { get; set; }
-        public int Latancy { get; set; }
+        public int LatancyToUser { get; set; }
+        public int LatancyToOther { get; set; }
+        public int ExectionLatancy { get; set; }
         public string Name { get; set; }
         public bool IsAvaliable { get; set; }
         public NodeType NodeType { get; set; }
@@ -24,26 +26,20 @@ namespace FogEnvironment.Domain.Model
         public double CastOfExecution { get; set; }
         public double CastPerGb { get; set; }
 
-        public event Func<Guid, NodeType, Task> TaskFailedEvent;
+        public event Func<Guid,Guid, NodeType,TaskType,Exception, Task> TaskFailedEvent;
         public event Func<Guid, NodeType, Task> NodeFailedEvent;
-        public event Func<Guid, NodeType, UserTask, Task> FaildTaskAssignment;
+        public event Func<Guid, NodeType, UserTask, Task> AssignTheFaildTask;
 
 
-        public void RaiseTaskFailureEvent()
-        {
-            TaskFailedEvent(Id, NodeType);
-        }
+        public async Task RaiseTaskFailureEvent(Guid id ,Guid taskId, NodeType nodeType, TaskType taskType,Exception exception) =>
+            await TaskFailedEvent(id, taskId, nodeType, taskType, exception);
 
-        public void FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public async Task FailedOfloadedTasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action is System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                FaildTaskAssignment(Id, NodeType, e.NewItems[0] as UserTask);
+                await AssignTheFaildTask(Id, NodeType, e.NewItems[0] as UserTask);
         }
 
-
-        ~BaseNode()
-        {
-            NodeFailedEvent(Id, NodeType);
-        }
+        public async Task RasieNodeFailureEvent(Guid nodeId, NodeType nodeType) => await NodeFailedEvent(nodeId, nodeType);
     }
 }

@@ -6,6 +6,7 @@ namespace FogEnvironment.NodeManager.Abstraction
     public interface ITaskManager
     {
         List<BaseNode> OffloadFunctionsToNodes(List<BaseNode> baseNodes);
-        (List<BaseNode>, List<UserTask>) ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks);
+        Task<(List<BaseNode>, List<UserTask>)> ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks);
+        Task<UserTask> ExecutFailedUserTask(UserTask userTask);
     }
 }

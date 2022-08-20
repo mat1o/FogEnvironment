@@ -16,5 +16,6 @@ namespace FogEnvironment.Domain.Model.TaskModels
         public TaskState State { get; set; }
         public BaseNode AssignedNode { get; set; }
         public byte[] Image { get; set; }
+        public List<TaskState> TaskStates { get; set; }
     }
 }
