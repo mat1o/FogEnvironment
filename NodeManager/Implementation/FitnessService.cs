@@ -28,7 +28,8 @@ namespace FogEnvironment.NodeManager.Implementation
                 .ThenBy(q => q.NodeType);
 
             foreach (var node in nodesOrderByCapacity)
-                if (node.NodeType != NodeType.Cloud && node.IsAvaliable && !node.AssignedTasks.IsAnyTaskAssigned())
+                if(node.IsAvaliable && !node.AssignedTasks.IsAnyTaskAssigned())
+                if (node.NodeType != NodeType.Cloud)
                     AssigneTasksToNodeByFitnessFunction(node, _userTasks);
                 else AssigneTasksToNodeDirectly(node, _userTasks);
 
@@ -40,6 +41,8 @@ namespace FogEnvironment.NodeManager.Implementation
             Thread.Sleep(node.LatancyToUser);
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
 
+            var tasksSizeOnDisk = 0;
+
             var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTasks, node);
             var selectedTaskForThisNode = UtilitieFunctions.KnapSackResolver(node.StorageCapacity, userTasks.Select(q => (int)q.TaskType).ToArray(), costOfRequestsByThisNode.Select(q => q.TaskCast).ToArray());
 
@@ -50,9 +53,10 @@ namespace FogEnvironment.NodeManager.Implementation
                 userTasks.ElementAt(selectedNodeIndex).AssignedNode = node;
                 userTasks.ElementAt(selectedNodeIndex).State = TaskState.Assigned;
                 node.AssignedTasks.Add(userTasks.ElementAt(selectedNodeIndex));
+                tasksSizeOnDisk += (int)userTasks.ElementAt(selectedNodeIndex).TaskType;
             }
 
-            node.StorageCapacity = node.StorageCapacity - selectedTaskForThisNode.MaxValue;
+            node.StorageCapacity = node.StorageCapacity - tasksSizeOnDisk;
             node.IsAvaliable = false;
 
             return userTasks;
@@ -61,19 +65,20 @@ namespace FogEnvironment.NodeManager.Implementation
         public List<UserTask> AssigneTasksToNodeDirectly(BaseNode node, List<UserTask> userTasks)
         {
             Thread.Sleep(node.LatancyToUser);
-            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && q.IsNodeAssigend()).ToList();
-            var taskCasts = 0;
+            userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
+            var tasksSizeOnDisk = 0;
 
             foreach (var userTask in userTasks)
             {
                 userTask.IsTaskAssignedToNode = true;
                 userTask.AssignedNode = node;
                 userTask.State = TaskState.Assigned;
+                userTask.TaskStates.Add(TaskState.Assigned);
                 node.AssignedTasks.Add(userTask);
-                taskCasts += userTask.TaskCast;
+                tasksSizeOnDisk += (int)userTask.TaskType;
             }
 
-            node.StorageCapacity = node.StorageCapacity - taskCasts;
+            node.StorageCapacity = node.StorageCapacity - tasksSizeOnDisk;
             node.IsAvaliable = false;
 
             return userTasks;
@@ -89,6 +94,7 @@ namespace FogEnvironment.NodeManager.Implementation
                     {
                         State = TaskState.AwaitForFreeNode,
                         TaskType = userTask,
+                        TaskStates = new List<TaskState>() { TaskState.AwaitForFreeNode }, 
                         UserRequestID = userRequest.Id,
                         IsTaskAssignedToNode = false,
                         Image = userRequest.Image

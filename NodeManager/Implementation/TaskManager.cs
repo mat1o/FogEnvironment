@@ -18,15 +18,16 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<UserTask> ExecutFailedUserTask(UserTask task)
         {
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
                 Thread.Sleep(task.AssignedNode.ExectionLatancy);
                 try
                 {
                     task.TaskStates.Add(TaskState.InProgress);
-                    var actionModel = task.AssignedNode.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
 
+                    var actionModel = task.AssignedNode.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
                     actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
+
                     task.AssignedNode.StorageCapacity = task.AssignedNode.StorageCapacity + (int)task.TaskType;
                     task.TaskStates.Add(TaskState.Done);
                 }
@@ -43,10 +44,12 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<(List<BaseNode>, List<UserTask>)> ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks)
         {
-           
+            await Task.Run(() =>
+            {
                 foreach (var node in baseNodes)
-                    if (1==1)
+                    if (1 == 1)
                     {
+                        //node.IsAvaliable = false;
                         foreach (var task in node.AssignedTasks)
                         {
                             var taskFromUserTasks = userTasks.FirstOrDefault(q => q.ID == task.ID);
@@ -54,14 +57,14 @@ namespace FogEnvironment.NodeManager.Implementation
                             var actionModel = node.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
 
                             taskFromUserTasks.State = TaskState.InProgress;
-                            task.TaskStates.Add(TaskState.InProgress);
+                            taskFromUserTasks.TaskStates.Add(TaskState.InProgress);
 
                             if (actionModel.ExecutableFunction != null)
                             {
                                 try
                                 {
                                     Thread.Sleep(task.AssignedNode.ExectionLatancy);
-                                    var t = actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
+                                    _ = actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
                                     task.State = TaskState.Done;
                                     task.TaskStates.Add(TaskState.Done);
                                     task.IsTaskDone = true;
@@ -80,8 +83,8 @@ namespace FogEnvironment.NodeManager.Implementation
                         node.IsAvaliable = true;
                     }
                     else node.RasieNodeFailureEvent(node.Id, node.NodeType);
-          
-            
+            });
+
             return (baseNodes, userTasks);
         }
 
