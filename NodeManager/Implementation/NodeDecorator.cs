@@ -29,8 +29,8 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public void CreateAndSeedNodes()
         {
-            _nodes.AddRange(_appSettings.FogEnvironmentModel.Edges);
-            _nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds);
+            _nodes.AddRange(_appSettings.FogEnvironmentModel.Edges ?? new List<Edge>());
+            _nodes.AddRange(_appSettings.FogEnvironmentModel.Clouds ?? new List<Cloud>());
 
             foreach (var node in _nodes)
             {
