@@ -18,15 +18,16 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<UserTask> ExecutFailedUserTask(UserTask task)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                Thread.Sleep(task.AssignedNode.ExectionLatancy);
+                Task.Delay(task.AssignedNode.ExectionLatancy);
+
                 try
                 {
                     task.TaskStates.Add(TaskState.InProgress);
 
                     var actionModel = task.AssignedNode.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
-                    actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
+                    await actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
 
                     task.AssignedNode.StorageCapacity = task.AssignedNode.StorageCapacity + (int)task.TaskType;
                     task.TaskStates.Add(TaskState.Done);
@@ -44,11 +45,12 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<(List<BaseNode>, List<UserTask>)> ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 foreach (var node in baseNodes)
                     if (1 == 1)
                     {
+                        
                         //node.IsAvaliable = false;
                         foreach (var task in node.AssignedTasks)
                         {
@@ -63,8 +65,9 @@ namespace FogEnvironment.NodeManager.Implementation
                             {
                                 try
                                 {
-                                    Thread.Sleep(task.AssignedNode.ExectionLatancy);
-                                    _ = actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
+                                    Task.Delay(task.AssignedNode.ExectionLatancy);
+                                    Thread.CurrentThread.Priority = node.NodeType == NodeType.Cloud ? ThreadPriority.Lowest : ThreadPriority.Lowest;
+                                    await actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
                                     task.State = TaskState.Done;
                                     task.TaskStates.Add(TaskState.Done);
                                     task.IsTaskDone = true;
@@ -82,6 +85,7 @@ namespace FogEnvironment.NodeManager.Implementation
                         }
                         node.IsAvaliable = true;
                     }
+
                     else node.RasieNodeFailureEvent(node.Id, node.NodeType);
             });
 
@@ -92,11 +96,10 @@ namespace FogEnvironment.NodeManager.Implementation
         {
             foreach (var node in baseNodes)
             {
-                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = (pic) => imageUtilities.FaceDetection((Bitmap)pic), TaskType = TaskType.FaceDetection });
-                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = (pic) => imageUtilities.HorizontalFlip((Bitmap)pic), TaskType = TaskType.RotateHorizontaly });
-                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = (pic) => imageUtilities.ConvertToBlackandWhite((Bitmap)pic), TaskType = TaskType.ConvertToBlackandWhite });
-                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = (pic) => imageUtilities.CreateThumbnail((Bitmap)pic), TaskType = TaskType.Thumbnail });
-                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = (pic) => imageUtilities.HorizontalFlip((Bitmap)pic), TaskType = TaskType.RotateHorizontaly });
+                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = async (pic) => await imageUtilities.FaceDetection((Bitmap)pic), TaskType = TaskType.FaceDetection });
+                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = async (pic) => await imageUtilities.HorizontalFlip((Bitmap)pic), TaskType = TaskType.RotateHorizontaly });
+                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = async (pic) => await imageUtilities.ConvertToBlackandWhite((Bitmap)pic), TaskType = TaskType.ConvertToBlackandWhite });
+                node.ExecutableFunctions.Add(new ActionModel { ExecutableFunction = async (pic) => await imageUtilities.CreateThumbnail((Bitmap)pic), TaskType = TaskType.Thumbnail });
             }
 
             return baseNodes;

@@ -1,4 +1,5 @@
 ﻿using FogEnvironment.Domain.Enum;
+using System.Runtime.InteropServices;
 
 namespace FogEnvironment.Domain.Model
 {

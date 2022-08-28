@@ -1,6 +1,6 @@
 ﻿namespace FogEnvironment.Domain.Enum
 {
-    public enum TaskType
+    public enum TaskType : ushort
     {
         FaceDetection = 512,
         Thumbnail = 256,

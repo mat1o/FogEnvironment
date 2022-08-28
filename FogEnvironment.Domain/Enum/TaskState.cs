@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FogEnvironment.Domain.Enum
+﻿namespace FogEnvironment.Domain.Enum
 {
-    public enum TaskState
+    public enum TaskState : byte
     {
         AwaitForFreeNode,
         Assigned,

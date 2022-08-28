@@ -14,8 +14,11 @@ namespace FogEnvironment.WebApi.Controllers
             _nodeDecorator = nodeDecorator;
         }
 
+        [HttpGet]
+        public IActionResult Test() => Content("Test!");
+
         [HttpPost]
-        public async Task<string> UploadPhoto([FromForm] RequestViewModel viewModel)
+        public async Task<IActionResult> UploadPhoto([FromForm] RequestViewModel viewModel)
         {
             await _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q => new UserTaskRequest
             {
@@ -25,7 +28,7 @@ namespace FogEnvironment.WebApi.Controllers
             }).ToList()
            );
 
-            return "";
+            return Ok("Task Done!");
         }
     }
 }

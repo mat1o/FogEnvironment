@@ -15,7 +15,6 @@ namespace FogEnvironment.NodeManager.Implementation
         {
             _userTasks = new List<UserTask>();
             _baseNodes = new List<BaseNode>();
-
         }
 
         public (List<UserTask>, List<BaseNode>) CreateUserTaskList(List<BaseNode> baseNodes, List<UserTaskRequest> userTaskRequest)
