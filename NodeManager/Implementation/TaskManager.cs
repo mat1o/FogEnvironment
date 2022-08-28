@@ -29,6 +29,7 @@ namespace FogEnvironment.NodeManager.Implementation
                     var actionModel = task.AssignedNode.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
                     await actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
 
+                    task.EstimatedLatancy += task.AssignedNode.ExectionLatancy;
                     task.AssignedNode.StorageCapacity = task.AssignedNode.StorageCapacity + (int)task.TaskType;
                     task.TaskStates.Add(TaskState.Done);
                 }
@@ -69,6 +70,7 @@ namespace FogEnvironment.NodeManager.Implementation
                                 task.State = TaskState.Done;
                                 task.TaskStates.Add(TaskState.Done);
                                 task.IsTaskDone = true;
+                                task.EstimatedLatancy += task.AssignedNode.ExectionLatancy;
                                 taskFromUserTasks.State = TaskState.Done;
                                 node.StorageCapacity = node.StorageCapacity + (int)task.TaskType;
                             }

@@ -2,6 +2,7 @@
 using FogEnvironment.NodeManager.Abstraction;
 using FogEnvironment.WebApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace FogEnvironment.WebApi.Controllers
@@ -24,7 +25,7 @@ namespace FogEnvironment.WebApi.Controllers
             var st = new Stopwatch();
 
             st.Start();
-            await _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q => new UserTaskRequest
+            var statistics = await _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q => new UserTaskRequest
             {
                 Image = q.ByteArrayFormImage,
                 UserTask = q.TaskTypes,
@@ -33,8 +34,28 @@ namespace FogEnvironment.WebApi.Controllers
            );
 
             st.Stop();
+            statistics.ElepsedTime = st.Elapsed;
 
-            return Ok($"Task Done in {st.Elapsed.ToString()} Seconds!");
+            try
+            {
+                var resp = JsonConvert.SerializeObject(statistics
+                       , Formatting.Indented,
+                               new JsonSerializerSettings
+                               {
+                                   ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                   PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                               }
+                       );
+
+
+                return Ok(resp);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+           
         }
     }
 }

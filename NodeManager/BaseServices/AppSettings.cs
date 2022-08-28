@@ -22,7 +22,7 @@ namespace FogEnvironment.NodeManager.BaseServices
 
             FogEnvironmentModel = config.GetSection("FogEnvironment").Get<FogEnvironmentConfigurationModel>();
             TasksVolume = config.GetSection("TasksVolume").Get<TasksVolume>();
-            IAppSettings.SientificNotationPower = config.GetSection("SientificNotationPower").Get<double>();
+            IAppSettings.SientificNotationPower = config.GetSection("SientificNotationPower").Get<short>();
         }
     }
 }

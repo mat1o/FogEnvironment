@@ -1,6 +1,7 @@
 ﻿using FogEnvironment.Domain.Enum;
 using FogEnvironment.Domain.Model.TaskModels;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace FogEnvironment.Domain.Model
 {

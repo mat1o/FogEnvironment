@@ -1,5 +1,6 @@
 ﻿using FogEnvironment.Domain.Enum;
 using FogEnvironment.Domain.Model;
+using FogEnvironment.Domain.Model.AppSettingModels;
 using FogEnvironment.Domain.Model.TaskModels;
 using FogEnvironment.NodeManager.Abstraction;
 using FogEnvironment.NodeManager.BaseServices;
@@ -63,19 +64,51 @@ namespace FogEnvironment.NodeManager.Implementation
             }
         }
 
-        public async Task ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)
+        public async Task<ExecutionStatistics> ManageAndExecuteTasksAsync(List<UserTaskRequest> userTaskRequests)
         {
-            try
-            {
-                _taskRequests = userTaskRequests;
-                (_userTasks, _nodes) = _fitnessService.CreateUserTaskList(_nodes, userTaskRequests);
-                (_nodes, _userTasks) = await _taskManager.ExecutUserTasks(_nodes, _userTasks);
-            }
-            catch
-            {
-            }
-        }
+            _taskRequests = userTaskRequests;
+            (_userTasks, _nodes) = _fitnessService.CreateUserTaskList(_nodes, userTaskRequests);
+            (_nodes, _userTasks) = await _taskManager.ExecutUserTasks(_nodes, _userTasks);
 
+            double casts = 0;
+            foreach (var node in _nodes)
+                casts += node.AssignedTasks.Select(q => q.TaskCast).Sum();
+
+            casts = casts * Math.Pow(10, IAppSettings.SientificNotationPower);
+
+            int latancy = 0;
+
+            foreach (var node in _nodes)
+                latancy += node.AssignedTasks.Select(q => q.EstimatedLatancy).Sum();
+
+            string nodeDetails = "";
+
+            foreach (var node in _nodes)
+            {
+                nodeDetails += "{";
+                nodeDetails += $"Node Name: {node.Name} // " +
+                        $"Node Id: {node.Id} // " +
+                        $"Node Type: {node.NodeType.ToString()} // " +
+                        $"Node Capacity: {node.StorageCapacity} // " +
+                        $"{node.Name}'s Tasks: //";
+
+                foreach (var task in node.AssignedTasks)
+                {
+                    nodeDetails += $"// Task Name: {task.TaskType.ToString()} // " +
+                        $" Task Cost: {task.TaskCast} // " +
+                        $" Task Execution Latancy: {task.EstimatedLatancy}";
+                    nodeDetails += "}   ";
+                }
+            }
+
+            return new ExecutionStatistics(IAppSettings.SientificNotationPower)
+            {
+                TotalExecutionCost = casts,
+                TotalExecutionLatancy = latancy,
+                ExecutionDetails = nodeDetails
+
+            };
+        }
         private async Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)
         {
             var nodeRemainedTasksReassign = _fitnessService.FailedNodeRemainedTasksReassign(_nodes, _nodes.SingleOrDefault(q => q.Id == obj));

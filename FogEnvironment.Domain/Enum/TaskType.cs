@@ -4,7 +4,7 @@
     {
         FaceDetection = 512,
         Thumbnail = 256,
-        RotateHorizontaly = 128,
-        ConvertToBlackandWhite = 128,
+        RotateHorizontaly = 100,
+        ConvertToBlackandWhite = 130,
     }
 }

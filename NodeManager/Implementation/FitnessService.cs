@@ -48,6 +48,8 @@ namespace FogEnvironment.NodeManager.Implementation
             foreach (var selectedNodeIndex in selectedTaskForThisNode?.NominatedRows)
             {
                 Thread.Sleep(node.LatancyToUser);
+
+                userTasks.ElementAt(selectedNodeIndex).EstimatedLatancy += node.LatancyToUser;
                 userTasks.ElementAt(selectedNodeIndex).IsTaskAssignedToNode = true;
                 userTasks.ElementAt(selectedNodeIndex).AssignedNode = node;
                 userTasks.ElementAt(selectedNodeIndex).State = TaskState.Assigned;
@@ -69,6 +71,7 @@ namespace FogEnvironment.NodeManager.Implementation
             foreach (var userTask in userTasks)
             {
                 Thread.Sleep(node.LatancyToUser);
+                userTask.EstimatedLatancy += node.LatancyToUser;
                 userTask.IsTaskAssignedToNode = true;
                 userTask.AssignedNode = node;
                 userTask.State = TaskState.Assigned;
@@ -105,7 +108,7 @@ namespace FogEnvironment.NodeManager.Implementation
         public List<UserTask> CalculateCostOfTasksByNode(List<UserTask> userTasks, BaseNode node)
         {
             foreach (var userTask in userTasks)
-                userTask.TaskCast = (int)((((double)(int)userTask.TaskType) / (double)1024) * (int)(node.CastPerGb * Math.Pow(10, 5))) + (int)(node.CastOfExecution * Math.Pow(10, 7));
+                userTask.TaskCast = (int)((((double)(int)userTask.TaskType) / (double)1024) * (int)(node.CastPerGb * Math.Pow(10, 7))) + (int)(node.CastOfExecution * Math.Pow(10, 7));
 
             return userTasks;
         }
@@ -122,6 +125,7 @@ namespace FogEnvironment.NodeManager.Implementation
                     userTask.AssignedNode = node;
                     userTask.State = TaskState.AwaitForFreeNode;
                     userTask.TaskStates.Add(TaskState.AwaitForFreeNode);
+                    userTask.EstimatedLatancy += node.LatancyToOther;
                     Thread.Sleep(node.LatancyToOther);
 
                     break;
@@ -147,6 +151,7 @@ namespace FogEnvironment.NodeManager.Implementation
                         remainedTask.AssignedNode = node;
                         remainedTask.State = TaskState.AwaitForFreeNode;
                         remainedTask.TaskStates.Add(TaskState.AwaitForFreeNode);
+                        remainedTask.EstimatedLatancy += node.LatancyToOther;
                         Thread.Sleep(node.LatancyToOther);
 
                         break;
