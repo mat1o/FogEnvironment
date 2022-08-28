@@ -20,7 +20,7 @@ namespace FogEnvironment.NodeManager.Implementation
         {
             await Task.Run(async () =>
             {
-                Task.Delay(task.AssignedNode.ExectionLatancy);
+                await Task.Delay(task.AssignedNode.ExectionLatancy);
 
                 try
                 {
@@ -45,49 +45,47 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public async Task<(List<BaseNode>, List<UserTask>)> ExecutUserTasks(List<BaseNode> baseNodes, List<UserTask> userTasks)
         {
-            await Task.Run(async () =>
-            {
-                foreach (var node in baseNodes)
-                    if (1 == 1)
+            List<Task> tasks = new List<Task>();
+            foreach (var node in baseNodes)
+                if (1 == 1)
+                {
+
+                    //node.IsAvaliable = false;
+                    foreach (var task in node.AssignedTasks)
                     {
-                        
-                        //node.IsAvaliable = false;
-                        foreach (var task in node.AssignedTasks)
+                        var taskFromUserTasks = userTasks.FirstOrDefault(q => q.ID == task.ID);
+
+                        var actionModel = node.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
+
+                        taskFromUserTasks.State = TaskState.InProgress;
+                        taskFromUserTasks.TaskStates.Add(TaskState.InProgress);
+
+                        if (actionModel.ExecutableFunction != null)
                         {
-                            var taskFromUserTasks = userTasks.FirstOrDefault(q => q.ID == task.ID);
-
-                            var actionModel = node.ExecutableFunctions.FirstOrDefault(q => q.TaskType == task.TaskType);
-
-                            taskFromUserTasks.State = TaskState.InProgress;
-                            taskFromUserTasks.TaskStates.Add(TaskState.InProgress);
-
-                            if (actionModel.ExecutableFunction != null)
+                            try
                             {
-                                try
-                                {
-                                    Task.Delay(task.AssignedNode.ExectionLatancy);
-                                    Thread.CurrentThread.Priority = node.NodeType == NodeType.Cloud ? ThreadPriority.Lowest : ThreadPriority.Lowest;
-                                    await actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image));
-                                    task.State = TaskState.Done;
-                                    task.TaskStates.Add(TaskState.Done);
-                                    task.IsTaskDone = true;
-                                    taskFromUserTasks.State = TaskState.Done;
-                                    node.StorageCapacity = node.StorageCapacity + (int)task.TaskType;
-                                }
-                                catch (Exception e)
-                                {
-                                    taskFromUserTasks.State = TaskState.Canceld;
-                                    task.TaskStates.Add(TaskState.Canceld);
-                                    node.RaiseTaskFailureEvent(node.Id, task.ID, node.NodeType, task.TaskType, e);
-                                    task.TaskStates.Add(TaskState.AwaitForFreeNode);
-                                }
+                                await Task.Delay(task.AssignedNode.ExectionLatancy);
+                                tasks.Add(actionModel.ExecutableFunction.Invoke(UtilitieFunctions.ConvertByteArrayToBitmap(task.Image)));
+                                task.State = TaskState.Done;
+                                task.TaskStates.Add(TaskState.Done);
+                                task.IsTaskDone = true;
+                                taskFromUserTasks.State = TaskState.Done;
+                                node.StorageCapacity = node.StorageCapacity + (int)task.TaskType;
+                            }
+                            catch (Exception e)
+                            {
+                                taskFromUserTasks.State = TaskState.Canceld;
+                                task.TaskStates.Add(TaskState.Canceld);
+                                node.RaiseTaskFailureEvent(node.Id, task.ID, node.NodeType, task.TaskType, e);
+                                task.TaskStates.Add(TaskState.AwaitForFreeNode);
                             }
                         }
-                        node.IsAvaliable = true;
                     }
+                    node.IsAvaliable = true;
+                }
+                else node.RasieNodeFailureEvent(node.Id, node.NodeType);
 
-                    else node.RasieNodeFailureEvent(node.Id, node.NodeType);
-            });
+            await Task.WhenAll(tasks);
 
             return (baseNodes, userTasks);
         }

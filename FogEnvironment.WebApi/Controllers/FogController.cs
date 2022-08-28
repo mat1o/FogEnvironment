@@ -2,6 +2,7 @@
 using FogEnvironment.NodeManager.Abstraction;
 using FogEnvironment.WebApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FogEnvironment.WebApi.Controllers
 {
@@ -20,6 +21,9 @@ namespace FogEnvironment.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadPhoto([FromForm] RequestViewModel viewModel)
         {
+            var st = new Stopwatch();
+
+            st.Start();
             await _nodeDecorator.ManageAndExecuteTasksAsync(viewModel.File.Select(q => new UserTaskRequest
             {
                 Image = q.ByteArrayFormImage,
@@ -28,7 +32,9 @@ namespace FogEnvironment.WebApi.Controllers
             }).ToList()
            );
 
-            return Ok("Task Done!");
+            st.Stop();
+
+            return Ok($"Task Done in {st.Elapsed.ToString()} Seconds!");
         }
     }
 }

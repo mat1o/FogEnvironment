@@ -37,7 +37,6 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public List<UserTask> AssigneTasksToNodeByFitnessFunction(BaseNode node, List<UserTask> userTasks)
         {
-            Thread.Sleep(node.LatancyToUser);
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
 
             var tasksSizeOnDisk = 0;
@@ -48,6 +47,7 @@ namespace FogEnvironment.NodeManager.Implementation
 
             foreach (var selectedNodeIndex in selectedTaskForThisNode?.NominatedRows)
             {
+                Thread.Sleep(node.LatancyToUser);
                 userTasks.ElementAt(selectedNodeIndex).IsTaskAssignedToNode = true;
                 userTasks.ElementAt(selectedNodeIndex).AssignedNode = node;
                 userTasks.ElementAt(selectedNodeIndex).State = TaskState.Assigned;
@@ -63,12 +63,12 @@ namespace FogEnvironment.NodeManager.Implementation
 
         public List<UserTask> AssigneTasksToNodeDirectly(BaseNode node, List<UserTask> userTasks)
         {
-            Thread.Sleep(node.LatancyToUser);
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
             var tasksSizeOnDisk = 0;
 
             foreach (var userTask in userTasks)
             {
+                Thread.Sleep(node.LatancyToUser);
                 userTask.IsTaskAssignedToNode = true;
                 userTask.AssignedNode = node;
                 userTask.State = TaskState.Assigned;
