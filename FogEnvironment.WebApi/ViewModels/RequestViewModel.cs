@@ -10,6 +10,11 @@ namespace FogEnvironment.WebApi.ViewModels
     public class RequestDetail
     {
         public IFormFile Image { get; set; }
+        public string FileName { get 
+            {
+                return Image.FileName;
+            }
+        }
         public string Name { get; set; }
 
         public List<TaskType> TaskTypes

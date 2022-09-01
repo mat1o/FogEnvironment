@@ -29,7 +29,8 @@ namespace FogEnvironment.WebApi.Controllers
             {
                 Image = q.ByteArrayFormImage,
                 UserTask = q.TaskTypes,
-                ImageSizeOnDisk = q.FileSize
+                ImageSizeOnDisk = q.FileSize,
+                FileName = q.FileName,
             }).ToList()
            );
 
@@ -46,8 +47,6 @@ namespace FogEnvironment.WebApi.Controllers
                                    PreserveReferencesHandling = PreserveReferencesHandling.Objects
                                }
                        );
-
-
                 return Ok(resp);
             }
             catch (Exception e)

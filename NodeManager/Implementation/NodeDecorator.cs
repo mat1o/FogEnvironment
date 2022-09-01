@@ -88,17 +88,22 @@ namespace FogEnvironment.NodeManager.Implementation
                 nodeDetails += "{";
                 nodeDetails += $"Node Name: {node.Name} // " +
                         $"Node Id: {node.Id} // " +
-                        $"Node Type: {node.NodeType.ToString()} // " +
+                        $"Node Type: {node.NodeType} // " +
                         $"Node Capacity: {node.StorageCapacity} // " +
-                        $"{node.Name}'s Tasks: //";
+                        $"Total Tasks Done: {node.AssignedTasks.Count} //" +
+                        $"Node's Profit: {node.AssignedTasks.Select(q=>q.TaskCast).Sum()} //" +
+                        $"{node.Name}'s Completed Tasks: //";
 
                 foreach (var task in node.AssignedTasks)
                 {
-                    nodeDetails += $"// Task Name: {task.TaskType.ToString()} // " +
+                    nodeDetails += $" User Request Id: {task.UserRequestID} // " +
+                        $" File Name: {task.FileName} // " +
+                        $" Task Id: {task.ID} // " +
+                        $" Task Name: {task.TaskType} // " +
                         $" Task Cost: {task.TaskCast} // " +
-                        $" Task Execution Latancy: {task.EstimatedLatancy}";
-                    nodeDetails += "}   ";
+                        $" Task Execution Latancy: {task.EstimatedLatancy} //";
                 }
+                nodeDetails += "}   ";
             }
 
             return new ExecutionStatistics(IAppSettings.SientificNotationPower)
@@ -106,7 +111,6 @@ namespace FogEnvironment.NodeManager.Implementation
                 TotalExecutionCost = casts,
                 TotalExecutionLatancy = latancy,
                 ExecutionDetails = nodeDetails
-
             };
         }
         private async Task Node_NodeFailedEvent(Guid obj, NodeType nodeType)

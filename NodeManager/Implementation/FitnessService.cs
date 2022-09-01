@@ -67,6 +67,7 @@ namespace FogEnvironment.NodeManager.Implementation
         {
             userTasks = userTasks.Where(q => q.IsTaskAssignedToNode is false && !q.IsNodeAssigend()).ToList();
             var tasksSizeOnDisk = 0;
+            var costOfRequestsByThisNode = CalculateCostOfTasksByNode(userTasks, node);
 
             foreach (var userTask in userTasks)
             {
@@ -99,7 +100,8 @@ namespace FogEnvironment.NodeManager.Implementation
                         TaskStates = new List<TaskState>() { TaskState.AwaitForFreeNode }, 
                         UserRequestID = userRequest.Id,
                         IsTaskAssignedToNode = false,
-                        Image = userRequest.Image
+                        Image = userRequest.Image,
+                        FileName = userRequest.FileName
                     });
 
             return userTasks;

@@ -70,7 +70,7 @@ namespace FogEnvironment.NodeManager.Implementation
                                 task.State = TaskState.Done;
                                 task.TaskStates.Add(TaskState.Done);
                                 task.IsTaskDone = true;
-                                task.EstimatedLatancy += task.AssignedNode.ExectionLatancy;
+                                task.EstimatedLatancy += (int)((task.AssignedNode.ExectionLatancy / (int)task.TaskType)* 100);
                                 taskFromUserTasks.State = TaskState.Done;
                                 node.StorageCapacity = node.StorageCapacity + (int)task.TaskType;
                             }
