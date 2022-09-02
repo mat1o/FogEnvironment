@@ -15,14 +15,14 @@ namespace FogEnvironment.WebApi.ViewModels
                 return Image.FileName;
             }
         }
-        public string Name { get; set; }
+        public string Tasks { get; set; }
 
         public List<TaskType> TaskTypes
         {
             get
             {
-                if (!string.IsNullOrEmpty(Name))
-                return Name.Split(",").Select(x => Enum.Parse(typeof(TaskType), x))
+                if (!string.IsNullOrEmpty(Tasks))
+                return Tasks.Split(",").Select(x => Enum.Parse(typeof(TaskType), x))
                            .Cast<TaskType>()
                            .ToList();
 

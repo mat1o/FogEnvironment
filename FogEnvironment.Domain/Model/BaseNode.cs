@@ -22,6 +22,7 @@ namespace FogEnvironment.Domain.Model
         public bool IsAvaliable { get; set; }
         public NodeType NodeType { get; set; }
         public List<UserTask> AssignedTasks { get; set; } = new List<UserTask>();
+        public List<TaskType> ExecutableUserTasks { get; set; }
         public List<ActionModel> ExecutableFunctions { get; set; } = new List<ActionModel>();
         public ObservableCollection<UserTask> FailedOfloadedTasks { get; set; } = new ObservableCollection<UserTask>();
         public double CastOfExecution { get; set; }
